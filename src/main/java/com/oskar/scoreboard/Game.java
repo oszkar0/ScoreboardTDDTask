@@ -1,9 +1,10 @@
 package com.oskar.scoreboard;
 
-import lombok.Data;
+import lombok.Getter;
+
 import java.time.Instant;
 
-@Data
+@Getter
 public class Game {
     private final String homeTeam;
     private final String awayTeam;
