@@ -15,4 +15,10 @@ public class Game {
         this.homeScore = 0;
         this.awayScore = 0;
     }
+
+    public void updateScore(int homeScore, int awayScore) {
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+    }
+
 }
