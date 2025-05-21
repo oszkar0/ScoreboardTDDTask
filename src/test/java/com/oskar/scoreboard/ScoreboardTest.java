@@ -122,4 +122,53 @@ class ScoreboardTest {
             verify(game).finish();
         }
     }
+
+    @Test
+    void shouldReturnGamesSortedByTotalScoreAndStartTime() throws NoSuchFieldException, IllegalAccessException {
+        Game game1 = mock(Game.class);
+        Game game2 = mock(Game.class);
+        Game game3 = mock(Game.class);
+        Game game4 = mock(Game.class);
+
+        Instant now = Instant.now();
+        Instant earlier = now.minusSeconds(60);
+
+        when(game1.getHomeTeam()).thenReturn("Argentina");
+        when(game1.getAwayTeam()).thenReturn("Australia");
+        when(game1.getHomeScore()).thenReturn(3);
+        when(game1.getAwayScore()).thenReturn(1);
+        when(game1.getTotalScore()).thenReturn(4);
+        when(game1.getStartTime()).thenReturn(earlier);
+
+        when(game2.getHomeTeam()).thenReturn("Spain");
+        when(game2.getAwayTeam()).thenReturn("Brazil");
+        when(game2.getHomeScore()).thenReturn(10);
+        when(game2.getAwayScore()).thenReturn(2);
+        when(game2.getTotalScore()).thenReturn(12);
+        when(game2.getStartTime()).thenReturn(earlier);
+
+        when(game3.getHomeTeam()).thenReturn("Germany");
+        when(game3.getAwayTeam()).thenReturn("France");
+        when(game3.getHomeScore()).thenReturn(2);
+        when(game3.getAwayScore()).thenReturn(2);
+        when(game3.getTotalScore()).thenReturn(4);
+        when(game3.getStartTime()).thenReturn(now);
+
+        when(game4.getHomeTeam()).thenReturn("Uruguay");
+        when(game4.getAwayTeam()).thenReturn("Italy");
+        when(game4.getHomeScore()).thenReturn(6);
+        when(game4.getAwayScore()).thenReturn(6);
+        when(game4.getTotalScore()).thenReturn(12);
+        when(game4.getStartTime()).thenReturn(now);
+
+        var field = scoreboard.getClass().getDeclaredField("games");
+        field.setAccessible(true);
+        List<Game> games = (List<Game>) field.get(scoreboard);
+        games.addAll(List.of(game1, game2, game3, game4));
+
+        List<Game> summary = scoreboard.getSummary();
+
+        assertEquals(List.of(game4, game2, game3, game1), summary);
+    }
+
 }

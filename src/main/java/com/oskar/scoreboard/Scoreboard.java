@@ -1,7 +1,7 @@
 package com.oskar.scoreboard;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Scoreboard {
@@ -32,7 +32,13 @@ public class Scoreboard {
     }
 
     public List<Game> getSummary() {
-        return Collections.unmodifiableList(games);
+        return games.stream()
+                .sorted(Comparator
+                        .comparingInt(Game::getTotalScore)
+                        .thenComparing(Game::getStartTime)
+                        .reversed()
+                )
+                .toList();
     }
 
     private boolean isGameAlreadyRunning(String home, String away) {
