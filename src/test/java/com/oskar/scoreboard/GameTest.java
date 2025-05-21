@@ -40,4 +40,12 @@ class GameTest {
             game.updateScore(-2, -1);
         });
     }
+
+    @Test
+    void shouldReturnTotalScore() {
+        Game game = new Game("Italy", "Spain");
+        game.updateScore(4, 1);
+
+        assertEquals(5, game.getTotalScore());
+    }
 }

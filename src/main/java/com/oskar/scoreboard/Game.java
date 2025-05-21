@@ -1,6 +1,7 @@
 package com.oskar.scoreboard;
 
 import lombok.Data;
+import java.time.Instant;
 
 @Data
 public class Game {
@@ -23,6 +24,10 @@ public class Game {
 
         this.homeScore = homeScore;
         this.awayScore = awayScore;
+    }
+
+    public int getTotalScore() {
+        return this.homeScore + this.awayScore;
     }
 
 }
