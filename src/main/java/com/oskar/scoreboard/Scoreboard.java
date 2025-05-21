@@ -21,6 +21,16 @@ public class Scoreboard {
         game.updateScore(homeScore, awayScore);
     }
 
+    public void finishGame(String home, String away) {
+        Game game = findGame(home, away);
+
+        if (game.getEndTime() != null) {
+            throw new IllegalStateException("Cannot finish game. Game between " + home + " and " + away + " is already finished.");
+        }
+
+        game.finish();
+    }
+
     public List<Game> getSummary() {
         return Collections.unmodifiableList(games);
     }

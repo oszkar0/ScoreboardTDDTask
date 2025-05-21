@@ -101,4 +101,25 @@ class ScoreboardTest {
             verify(finishedGame, never()).updateScore(3, 3);
         }
     }
+
+    @Test
+    void shouldFinishRunningGame() {
+        String home = "Argentina";
+        String away = "Uruguay";
+
+        Game game = mock(Game.class);
+        when(game.getHomeTeam()).thenReturn(home);
+        when(game.getAwayTeam()).thenReturn(away);
+        when(game.getEndTime()).thenReturn(null);
+
+        try (MockedStatic<Game> mocked = mockStatic(Game.class)) {
+            mocked.when(() -> Game.startGame(home, away)).thenReturn(game);
+
+            scoreboard.startGame(home, away);
+
+            scoreboard.finishGame(home, away);
+
+            verify(game).finish();
+        }
+    }
 }
