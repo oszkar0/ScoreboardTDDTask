@@ -17,6 +17,10 @@ public class Game {
     }
 
     public void updateScore(int homeScore, int awayScore) {
+        if (homeScore < 0 || awayScore < 0) {
+            throw new IllegalArgumentException("Score must not be a negative number!");
+        }
+
         this.homeScore = homeScore;
         this.awayScore = awayScore;
     }

@@ -23,4 +23,21 @@ class GameTest {
         assertEquals(2, game.getHomeScore());
         assertEquals(3, game.getAwayScore());
     }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenNegativeResultPassed() {
+        Game game = new Game("Portugal", "USA");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            game.updateScore(-1, 3);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            game.updateScore(2, -5);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            game.updateScore(-2, -1);
+        });
+    }
 }
