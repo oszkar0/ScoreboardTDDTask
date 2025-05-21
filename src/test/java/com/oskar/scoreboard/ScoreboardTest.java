@@ -93,11 +93,11 @@ class ScoreboardTest {
 
             scoreboard.startGame(home, away);
 
-            IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
                     scoreboard.updateScore(home, away, 3, 3)
             );
 
-            assertEquals("Cannot update score. Game between France and Brazil has already finished.", ex.getMessage());
+            assertEquals("Ongoing game between France and Brazil not found.", ex.getMessage());
             verify(finishedGame, never()).updateScore(3, 3);
         }
     }
