@@ -46,4 +46,10 @@ public class Game {
         this.endTime = Instant.now();
         return this.endTime;
     }
+
+
+    @Override
+    public String toString() {
+        return homeTeam + " " + homeScore + " - " +  awayTeam + " " + awayScore;
+    }
 }
