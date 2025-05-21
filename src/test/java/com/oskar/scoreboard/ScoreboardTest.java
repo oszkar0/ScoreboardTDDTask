@@ -7,8 +7,8 @@ import org.mockito.MockedStatic;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class ScoreboardTest {
     private Scoreboard scoreboard;
@@ -35,4 +35,24 @@ class ScoreboardTest {
         }
     }
 
+    @Test
+    void shouldThrowExceptionWhenGameWithSameTeamsIsAlreadyRunning() {
+        String home = "Poland";
+        String away = "Germany";
+        Game existingGame = mock(Game.class);
+
+        when(existingGame.getHomeTeam()).thenReturn(home);
+        when(existingGame.getAwayTeam()).thenReturn(away);
+        when(existingGame.getEndTime()).thenReturn(null);
+
+
+        try (MockedStatic<Game> mockedStatic = mockStatic(Game.class)) {
+            mockedStatic.when(() -> Game.startGame(home, away)).thenReturn(existingGame);
+
+            scoreboard.startGame(home, away);
+            assertThrows(IllegalArgumentException.class,
+                    () -> scoreboard.startGame(home, away));
+
+        }
+    }
 }
