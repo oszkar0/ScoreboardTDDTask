@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +54,51 @@ class ScoreboardTest {
             assertThrows(IllegalArgumentException.class,
                     () -> scoreboard.startGame(home, away));
 
+        }
+    }
+
+    @Test
+    void shouldUpdateScoreOfRunningGameOnly() {
+        String home = "Poland";
+        String away = "Germany";
+
+        Game runningGame = mock(Game.class);
+        when(runningGame.getHomeTeam()).thenReturn(home);
+        when(runningGame.getAwayTeam()).thenReturn(away);
+        when(runningGame.getEndTime()).thenReturn(null);
+
+
+        try (MockedStatic<Game> mocked = mockStatic(Game.class)) {
+            mocked.when(() -> Game.startGame(home, away)).thenReturn(runningGame);
+
+            scoreboard.startGame(home, away);
+            scoreboard.updateScore(home, away, 2, 1);
+
+            verify(runningGame).updateScore(2, 1);
+        }
+    }
+
+    @Test
+    void shouldNotUpdateScoreOfFinishedGame() {
+        String home = "France";
+        String away = "Brazil";
+
+        Game finishedGame = mock(Game.class);
+        when(finishedGame.getHomeTeam()).thenReturn(home);
+        when(finishedGame.getAwayTeam()).thenReturn(away);
+        when(finishedGame.getEndTime()).thenReturn(Instant.now());
+
+        try (MockedStatic<Game> mocked = mockStatic(Game.class)) {
+            mocked.when(() -> Game.startGame(home, away)).thenReturn(finishedGame);
+
+            scoreboard.startGame(home, away);
+
+            IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+                    scoreboard.updateScore(home, away, 3, 3)
+            );
+
+            assertEquals("Cannot update score. Game between France and Brazil has already finished.", ex.getMessage());
+            verify(finishedGame, never()).updateScore(3, 3);
         }
     }
 }
