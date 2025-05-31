@@ -170,5 +170,27 @@ class ScoreboardTest {
 
         assertEquals(List.of(game4, game2, game3, game1), summary);
     }
+    @Test
+    void shouldThrowExceptionWhenGameIsNotRunning() throws Exception {
+        String home = "Team A";
+        String away = "Team B";
+
+        Game finishedGame = mock(Game.class);
+        when(finishedGame.getHomeTeam()).thenReturn(home);
+        when(finishedGame.getAwayTeam()).thenReturn(away);
+        when(finishedGame.getEndTime()).thenReturn(Instant.now());
+
+        var field = scoreboard.getClass().getDeclaredField("games");
+        field.setAccessible(true);
+        List<Game> games = (List<Game>) field.get(scoreboard);
+        games.add(finishedGame);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                scoreboard.finishGame(home, away)
+        );
+
+        assertEquals("Ongoing game between Team A and Team B not found.", exception.getMessage());
+        verify(finishedGame, never()).finish();
+    }
 
 }
